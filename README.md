@@ -25,7 +25,7 @@ bin/install <installation directory>
 
 ### Configure application
 
-Modify `.env` file at <installation directory> to set required data:
+Modify `.env` file at `<installation directory>` to set required data:
 
 ```dotenv
 # NordVpn environment
@@ -42,4 +42,18 @@ TRANSMISSION_USER=<Transmission interface user>
 TRANSMISSION_PASS=<Transmission interface password>
 # Timezone
 TRANSMISSION_TZ=America/Los_Angeles
+```
+
+### Test application
+
+```bash
+cd <installation directory>
+docker-compose up
+```
+
+### Start application as a service
+
+```bash
+cd <installation directory>
+docker-compose start
 ```
