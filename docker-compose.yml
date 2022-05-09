@@ -1,0 +1,40 @@
+version: "2.1"
+services:
+  vpn:
+    image: ghcr.io/bubuntux/nordvpn:latest
+    cap_add:
+      - NET_ADMIN               # Required
+      - NET_RAW                 # Required
+    environment: # Review https://github.com/bubuntux/nordvpn#environment-variables
+      - USER=${VPN_USER}     # Required
+      - PASS=${VPN_PASS}        # Required
+      - CONNECT=${VPN_CONNECT}
+      - TECHNOLOGY=NordLynx
+      - NETWORK=${VPN_LOCAL_NETWORK}  # So it can be accessed within the local network
+      - FIREWALL=Enable
+    ports:
+      - "9091:9091"
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1  # Recomended if using ipv4 only
+    restart: unless-stopped
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TRANSMISSION_TZ}
+#      - TRANSMISSION_WEB_HOME=/combustion-release/ #optional
+      - USER=${TRANSMISSION_USER} #optional
+      - PASS=${TRANSMISSION_PASS} #optional
+#      - WHITELIST=iplist #optional
+#      - PEERPORT=peerport #optional
+#      - HOST_WHITELIST=dnsname list #optional
+    volumes:
+      - ${TRANSMISSION_DATA}/config:/config
+      - ${TRANSMISSION_DATA}/downloads:/downloads
+      - ${TRANSMISSION_DATA}/watch:/watch
+    restart: unless-stopped
+    network_mode: service:vpn
+    depends_on:
+      - vpn

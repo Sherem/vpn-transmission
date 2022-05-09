@@ -1,0 +1,21 @@
+#!/bin/bash
+PROJ_DIR="$(dirname "$0")"
+PROJ_DIR=$(cd "$PROJ_DIR"/.. && pwd)
+
+
+if [[ -z $1 ]]; then
+  echo "Installation directory not exist"
+  exit 1
+fi
+
+if ! mkdir -p "${1}"; then
+  echo "Failed to create installation directory"
+  exit 1
+fi
+
+if ! cd "${1}"; then
+  echo "Failed to enter to installation directory"
+  exit 1
+fi
+
+cp "${PROJ_DIR}/docker-compose.yml" . && cp "${PROJ_DIR}/src/env.tpl" ./.env
